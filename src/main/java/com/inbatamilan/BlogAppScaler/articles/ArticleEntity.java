@@ -2,6 +2,8 @@ package com.inbatamilan.BlogAppScaler.articles;
 
 import com.inbatamilan.BlogAppScaler.users.UserEntity;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.jspecify.annotations.NonNull;
@@ -12,6 +14,8 @@ import java.util.Date;
 
 @Entity(name = "articles")
 @Data
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 public class ArticleEntity {
 

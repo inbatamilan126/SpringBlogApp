@@ -1,6 +1,8 @@
 package com.inbatamilan.BlogAppScaler.users;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.jspecify.annotations.NonNull;
@@ -8,6 +10,8 @@ import org.jspecify.annotations.Nullable;
 
 @Entity(name = "users")
 @Data
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 public class UserEntity {
 
@@ -24,9 +28,9 @@ public class UserEntity {
     @NonNull
     private String email;
 
-    @Column(nullable = false)
+    /* @Column(nullable = false)
     @NonNull
-    private String password;
+    private String password; */
 
     @Column(nullable = true)
     @Nullable
