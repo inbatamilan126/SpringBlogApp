@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
-import com.inbatamilan.BlogAppScaler.users.dtos.CreateUserRequest;
+import com.inbatamilan.BlogAppScaler.users.dtos.UserRequest;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -17,7 +17,7 @@ public class UsersServiceTest {
 
     @Test
     void can_create_users() {
-        var user = usersService.createUser(new CreateUserRequest(
+        var user = usersService.createUser(new UserRequest(
                 "john",
                 "pass123",
                 "john@blog.com"));

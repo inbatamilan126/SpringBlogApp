@@ -10,9 +10,9 @@ import org.jspecify.annotations.Nullable;
 
 @Entity(name = "users")
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class UserEntity {
 
     @Id
@@ -26,11 +26,11 @@ public class UserEntity {
 
     @Column(nullable = false)
     @NonNull
-    private String email;
+    private String password;
 
-    /* @Column(nullable = false)
+    @Column(nullable = false)
     @NonNull
-    private String password; */
+    private String email;
 
     @Column(nullable = true)
     @Nullable

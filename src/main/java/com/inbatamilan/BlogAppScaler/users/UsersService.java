@@ -1,23 +1,27 @@
 package com.inbatamilan.BlogAppScaler.users;
 
-import com.inbatamilan.BlogAppScaler.users.dtos.CreateUserRequest;
+import com.inbatamilan.BlogAppScaler.users.dtos.UserRequest;
+import org.modelmapper.ModelMapper;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UsersService {
 
     private final UserRepository userRepository;
+    private final ModelMapper modelMapper;
+    private final PasswordEncoder passwordEncoder;
 
-    public UsersService(UserRepository userRepository) {
+    public UsersService(UserRepository userRepository, ModelMapper modelMapper,
+                        PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.modelMapper = modelMapper;
+        this.passwordEncoder = passwordEncoder;
     }
 
-    public UserEntity createUser(CreateUserRequest request) {
-        var newUser = UserEntity.builder()
-                .username(request.getUsername())
-                //.password(request.getPassword()) // TODO: encrypt password
-                .email(request.getEmail())
-                .build();
+    public UserEntity createUser(UserRequest request) {
+        UserEntity newUser = modelMapper.map(request, UserEntity.class);
+        newUser.setPassword(passwordEncoder.encode(request.getPassword()));
         return userRepository.save(newUser);
     }
 
@@ -32,10 +36,26 @@ public class UsersService {
     }
 
     public UserEntity loginUser(String username, String password) {
-        var user = userRepository.findByUsername(username).orElseThrow(() ->
-                new UserNotFoundException(username));
-        // TODO: check the password
+        // TODO: throw invalid credential exception when username is wrong
+        var user = userRepository.findByUsername(username).orElseThrow(InvalidCredentialsException::new);
+        var passMatch = passwordEncoder.matches(password, user.getPassword());
+        if (!passMatch) throw new InvalidCredentialsException();
         return user;
+    }
+
+    public UserEntity updateUser(UserRequest request, Long id) {
+        UserEntity savedUser = userRepository.findById(id).orElseThrow(() ->
+                new UserNotFoundException(id)
+        );
+        modelMapper.map(request, savedUser);
+        return userRepository.save(savedUser);
+    }
+
+    public void deleteUser(Long id) {
+        UserEntity entity = userRepository.findById(id).orElseThrow(() ->
+                new UserNotFoundException(id)
+        );
+        userRepository.delete(entity);
     }
 
     public static class UserNotFoundException extends IllegalArgumentException {
@@ -46,6 +66,13 @@ public class UsersService {
 
         public UserNotFoundException(Long userId) {
             super("User with id: " + userId + " not found");
+        }
+    }
+
+    public static class InvalidCredentialsException
+            extends IllegalArgumentException {
+        public InvalidCredentialsException() {
+            super("Invalid username or password combination");
         }
     }
 }
