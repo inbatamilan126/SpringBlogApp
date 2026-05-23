@@ -1,5 +1,8 @@
 package com.inbatamilan.BlogAppScaler.articles;
 
+import com.inbatamilan.BlogAppScaler.articles.dtos.ArticleResponse;
+import com.inbatamilan.BlogAppScaler.articles.dtos.CreateArticleRequest;
+import com.inbatamilan.BlogAppScaler.articles.dtos.UpdateArticleRequest;
 import com.inbatamilan.BlogAppScaler.common.dtos.ErrorResponse;
 import com.inbatamilan.BlogAppScaler.users.UserEntity;
 import org.springframework.http.HttpStatus;
@@ -21,24 +24,36 @@ public class ArticlesController {
     }
 
     @GetMapping("")
-    public ResponseEntity<List<ArticleEntity>> getArticles() {
+    public ResponseEntity<List<ArticleResponse>> getArticles() {
         return ResponseEntity.ok(
-                StreamSupport.stream(
-                        articlesService.getAllArticles().spliterator(), false)
+                articlesService.getAllArticles().stream()
                         .toList()
         );
     }
 
     @GetMapping("/{slug}")
-    public ResponseEntity<ArticleEntity> getArticleBySlug(
+    public ResponseEntity<ArticleResponse> getArticleBySlug(
             @PathVariable("slug") String slug) {
         return ResponseEntity.ok(articlesService.getArticleBySlug(slug));
     }
 
     @PostMapping()
-    String createArticle(@AuthenticationPrincipal UserEntity user) {
-        return "create article called by " + user.getUsername();
+    ResponseEntity<ArticleResponse> createArticle(@AuthenticationPrincipal UserEntity user,
+                                                  @RequestBody CreateArticleRequest articleRequest) {
+        return ResponseEntity.ok(articlesService.createArticle(articleRequest, user.getId()));
     }
+
+    @PatchMapping("/{slug}")
+    public ResponseEntity<ArticleEntity> updateArticle(@PathVariable String slug,
+                                                       @RequestBody UpdateArticleRequest updateArticleRequest) {
+        return ResponseEntity.ok(articlesService.updateArticleBySlug(slug, updateArticleRequest));
+    }
+
+    /* @PatchMapping("/{articleId}")
+    public ResponseEntity<ArticleEntity> updateArticle(@PathVariable Long articleId,
+                                                       @RequestBody UpdateArticleRequest updateArticleRequest) {
+        return ResponseEntity.ok(articlesService.updateArticleById(articleId, updateArticleRequest));
+    } */
 
     @ExceptionHandler({
             ArticlesService.ArticleNotFoundException.class
