@@ -11,7 +11,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.StreamSupport;
 
 @RestController
 @RequestMapping("/articles")
@@ -44,8 +43,8 @@ public class ArticlesController {
     }
 
     @PatchMapping("/{slug}")
-    public ResponseEntity<ArticleEntity> updateArticle(@PathVariable String slug,
-                                                       @RequestBody UpdateArticleRequest updateArticleRequest) {
+    public ResponseEntity<ArticleResponse> updateArticle(@PathVariable String slug,
+                                                         @RequestBody UpdateArticleRequest updateArticleRequest) {
         return ResponseEntity.ok(articlesService.updateArticleBySlug(slug, updateArticleRequest));
     }
 

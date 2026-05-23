@@ -99,7 +99,7 @@ public class ArticlesService {
     }
 
     @PreAuthorize("@articleSecurity.isOwner(#slug, authentication.principal.id)")
-    public ArticleEntity updateArticleBySlug(String slug, UpdateArticleRequest articleRequest) {
+    public ArticleResponse updateArticleBySlug(String slug, UpdateArticleRequest articleRequest) {
         ArticleEntity article = articlesRepository.findBySlug(slug);
         if (article == null) {
             throw new ArticleNotFoundException(slug);
@@ -116,7 +116,14 @@ public class ArticlesService {
         if (articleRequest.getSubtitle() != null) {
             article.setSubtitle(articleRequest.getSubtitle());
         }
-        return articlesRepository.save(article);
+        var saved = articlesRepository.save(article);
+        return ArticleResponse.builder()
+                .author(saved.getAuthor().getUsername())
+                .title(saved.getTitle())
+                .slug(saved.getSlug())
+                .subtitle(saved.getSubtitle())
+                .body(saved.getBody())
+                .build();
     }
 
     public void deleteArticle(Long articleId) {
