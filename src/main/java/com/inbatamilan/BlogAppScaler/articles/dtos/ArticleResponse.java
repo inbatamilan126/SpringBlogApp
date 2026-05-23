@@ -10,6 +10,7 @@ import org.jspecify.annotations.Nullable;
 @Setter(AccessLevel.NONE)
 @Builder
 public class ArticleResponse {
+    private Long id;
     private String title;
     private String slug;
     private String body;

@@ -2,7 +2,9 @@ package com.inbatamilan.BlogAppScaler.comments;
 
 import com.inbatamilan.BlogAppScaler.comments.dtos.CommentResponse;
 import com.inbatamilan.BlogAppScaler.comments.dtos.CreateComment;
+import com.inbatamilan.BlogAppScaler.common.dtos.PagedResponse;
 import com.inbatamilan.BlogAppScaler.users.UserEntity;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -20,8 +22,9 @@ public class CommentsController {
     }
 
     @GetMapping
-    public ResponseEntity<List<CommentResponse>> getComments(@PathVariable("article-slug") String articleSlug) {
-        return ResponseEntity.ok(commentsService.getCommentsByArticleSlug(articleSlug));
+    public ResponseEntity<PagedResponse<CommentResponse>> getComments(@PathVariable("article-slug") String articleSlug,
+                                                                      Pageable pageable) {
+        return ResponseEntity.ok(commentsService.getCommentsByArticleSlug(articleSlug, pageable));
     }
 
     @PostMapping()

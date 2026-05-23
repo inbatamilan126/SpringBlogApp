@@ -4,7 +4,10 @@ import com.inbatamilan.BlogAppScaler.articles.dtos.ArticleResponse;
 import com.inbatamilan.BlogAppScaler.articles.dtos.CreateArticleRequest;
 import com.inbatamilan.BlogAppScaler.articles.dtos.UpdateArticleRequest;
 import com.inbatamilan.BlogAppScaler.common.dtos.ErrorResponse;
+import com.inbatamilan.BlogAppScaler.common.dtos.PagedResponse;
 import com.inbatamilan.BlogAppScaler.users.UserEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -23,11 +26,8 @@ public class ArticlesController {
     }
 
     @GetMapping("")
-    public ResponseEntity<List<ArticleResponse>> getArticles() {
-        return ResponseEntity.ok(
-                articlesService.getAllArticles().stream()
-                        .toList()
-        );
+    public ResponseEntity<PagedResponse<ArticleResponse>> getArticles(Pageable pageable) {
+        return ResponseEntity.ok(articlesService.getAllArticles(pageable));
     }
 
     @GetMapping("/{slug}")

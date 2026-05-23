@@ -3,8 +3,11 @@ package com.inbatamilan.BlogAppScaler.articles;
 import com.inbatamilan.BlogAppScaler.articles.dtos.ArticleResponse;
 import com.inbatamilan.BlogAppScaler.articles.dtos.CreateArticleRequest;
 import com.inbatamilan.BlogAppScaler.articles.dtos.UpdateArticleRequest;
+import com.inbatamilan.BlogAppScaler.common.dtos.PagedResponse;
 import com.inbatamilan.BlogAppScaler.users.UserRepository;
 import com.inbatamilan.BlogAppScaler.users.UsersService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
@@ -23,21 +26,19 @@ public class ArticlesService {
         this.userRepository = userRepository;
     }
 
-    public List<ArticleResponse> getAllArticles() {
-        List<ArticleResponse> articles = new ArrayList<>();
-        var savedArticles = articlesRepository.findAll();
-        for (ArticleEntity article : savedArticles) {
-            articles.add(
-                    ArticleResponse.builder()
-                            .title(article.getTitle())
-                            .slug(article.getSlug())
-                            .body(article.getBody())
-                            .subtitle(article.getSubtitle())
-                            .author(article.getAuthor().getUsername())
-                            .build()
-            );
-        }
-        return articles;
+    public PagedResponse<ArticleResponse> getAllArticles(Pageable pageable) {
+        Page<ArticleEntity> articleEntityPage = articlesRepository.findAll(pageable);
+        Page<ArticleResponse> articleResponsePage = articleEntityPage.map(article ->
+                ArticleResponse.builder()
+                        .id(article.getId())
+                        .body(article.getBody())
+                        .title(article.getTitle())
+                        .subtitle(article.getSubtitle())
+                        .slug(article.getSlug())
+                        .author(article.getAuthor().getUsername())
+                        .build()
+        );
+        return new PagedResponse<ArticleResponse>(articleResponsePage);
     }
 
     public ArticleResponse getArticleBySlug(String slug) {
@@ -46,6 +47,7 @@ public class ArticlesService {
             throw new ArticleNotFoundException(slug);
         }
         return ArticleResponse.builder()
+                .id(article.getId())
                 .title(article.getTitle())
                 .slug(article.getSlug())
                 .body(article.getBody())
@@ -70,6 +72,7 @@ public class ArticlesService {
                 .author(author)
                 .build());
         return ArticleResponse.builder()
+                .id(savedArticle.getId())
                 .title(savedArticle.getTitle())
                 .slug(savedArticle.getSlug())
                 .body(savedArticle.getBody())
@@ -118,6 +121,7 @@ public class ArticlesService {
         }
         var saved = articlesRepository.save(article);
         return ArticleResponse.builder()
+                .id(saved.getId())
                 .author(saved.getAuthor().getUsername())
                 .title(saved.getTitle())
                 .slug(saved.getSlug())
