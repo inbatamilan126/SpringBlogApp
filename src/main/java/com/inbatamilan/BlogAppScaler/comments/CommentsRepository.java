@@ -7,5 +7,5 @@ import java.util.List;
 
 @Repository
 public interface CommentsRepository extends JpaRepository<CommentEntity, Long> {
-    List<CommentEntity> getCommentEntitiesByArticle_Id(Long articleId);
+    List<CommentEntity> getCommentEntitiesByArticle_Slug(String articleSlug);
 }

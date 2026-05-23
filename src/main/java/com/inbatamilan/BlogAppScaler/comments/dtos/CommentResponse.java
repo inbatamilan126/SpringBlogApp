@@ -1,4 +1,4 @@
-package com.inbatamilan.BlogAppScaler.comments;
+package com.inbatamilan.BlogAppScaler.comments.dtos;
 
 import com.inbatamilan.BlogAppScaler.articles.ArticleEntity;
 import com.inbatamilan.BlogAppScaler.users.UserEntity;
@@ -7,40 +7,25 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.util.Date;
 
-@Entity(name = "comments")
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CommentEntity {
+public class CommentResponse {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false)
     private Long id;
 
-    @Nullable
     private String title;
 
-    @NonNull
     private String body;
 
-    @CreationTimestamp
     private Date createdAt;
 
-    @ManyToOne
-    @JoinColumn(name = "articleId", nullable = false)
-    private ArticleEntity article;
-
-    @ManyToOne
-    @JoinColumn(name = "authorId", nullable = false)
-    private UserEntity author;
-
+    private String author;
 }

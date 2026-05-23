@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.springframework.data.annotation.CreatedDate;
@@ -37,7 +38,7 @@ public class ArticleEntity {
     @NonNull
     private String body;
 
-    @CreatedDate
+    @CreationTimestamp
     private Date createdAt;
 
     @ManyToOne
